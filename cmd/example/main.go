@@ -4,11 +4,31 @@ import (
 	"flag"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"os"
 
 	"github.com/caasmo/restinpieces"
-	"github.com/caasmo/restinpieces-httprouter" 
+	"github.com/caasmo/restinpieces-httprouter"
+	r "github.com/caasmo/restinpieces/router"
 )
+
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Hello, world!")
+}
+
+func echoHandler(w http.ResponseWriter, req *http.Request) {
+	message := req.URL.Query().Get("msg")
+	if message == "" {
+		message = "Echo!"
+	}
+	fmt.Fprintln(w, message)
+}
+
+func postHandler(w http.ResponseWriter, r *http.Request) {
+	// In a real app, you'd read the request body
+	w.WriteHeader(http.StatusCreated)
+	fmt.Fprintln(w, "Resource created (simulated)")
+}
 
 func main() {
 	dbPath := flag.String("dbpath", "", "Path to the SQLite database file (required)") // Changed flag name
@@ -41,10 +61,10 @@ func main() {
 		}
 	}()
 
-	_, srv, err := restinpieces.New(
+	app, srv, err := restinpieces.New(
 		restinpieces.WithDbZombiezen(dbPool),
 		restinpieces.WithAgeKeyPath(*ageKeyPath),
-		httprouter.WithRouterHttprouter(), // Use httprouter
+		httprouter.WithRouterHttprouter(),
 		restinpieces.WithCacheRistretto(),
 		restinpieces.WithTextLogger(nil),
 	)
@@ -52,6 +72,13 @@ func main() {
 		slog.Error("failed to initialize application", "error", err)
 		os.Exit(1)
 	}
+
+	// Register example routes
+	app.Router().Register(map[string]*r.Chain{
+		"GET /hello": r.NewChain(http.HandlerFunc(helloHandler)),
+		"/echo":      r.NewChain(http.HandlerFunc(echoHandler)), // Defaults to GET
+		"POST /items": r.NewChain(http.HandlerFunc(postHandler)),
+	})
 
 	srv.Run()
 
