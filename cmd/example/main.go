@@ -83,7 +83,7 @@ func main() {
 	}
 
 	// Register example routes
-	app.Router().Register(map[string]*r.Chain{
+	app.Router().Register(r.Chains{
 		"GET /hello": r.NewChain(http.HandlerFunc(helloHandler)).WithMiddleware(loggingMiddleware), // Added middleware
 		"/echo":      r.NewChain(http.HandlerFunc(echoHandler)),                                     // Defaults to GET
 		"POST /items": r.NewChain(http.HandlerFunc(postHandler)),
