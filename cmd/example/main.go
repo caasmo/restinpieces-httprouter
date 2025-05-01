@@ -12,6 +12,15 @@ import (
 	r "github.com/caasmo/restinpieces/router"
 )
 
+// Simple logging middleware example
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("Request received", "method", r.Method, "path", r.URL.Path)
+		next.ServeHTTP(w, r)
+		// We could log response status here if needed, but requires a ResponseWriter wrapper
+	})
+}
+
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Hello, world!")
 }
@@ -75,8 +84,8 @@ func main() {
 
 	// Register example routes
 	app.Router().Register(map[string]*r.Chain{
-		"GET /hello": r.NewChain(http.HandlerFunc(helloHandler)),
-		"/echo":      r.NewChain(http.HandlerFunc(echoHandler)), // Defaults to GET
+		"GET /hello": r.NewChain(http.HandlerFunc(helloHandler)).WithMiddleware(loggingMiddleware), // Added middleware
+		"/echo":      r.NewChain(http.HandlerFunc(echoHandler)),                                     // Defaults to GET
 		"POST /items": r.NewChain(http.HandlerFunc(postHandler)),
 	})
 
