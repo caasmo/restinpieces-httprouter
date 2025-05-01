@@ -5,7 +5,7 @@ import (
 )
 
 func WithRouterHttprouter() core.Option {
-	r := httprouter.New()
+	r := New()
 	return core.WithRouter(r)
 }
 

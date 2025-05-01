@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/caasmo/restinpieces"
-	"github.com/caasmo/restinpieces/router/httprouter" // Import the httprouter package
+	"github.com/caasmo/restinpieces-httprouter" 
 )
 
 func main() {
