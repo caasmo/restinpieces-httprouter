@@ -29,6 +29,12 @@ func main() {
 
 ```
 
+## Compatibility
+
+This router implements the `router.Router` interface defined by `restinpieces`.
+
+Route patterns must follow the standard `http.ServeMux` format: `"METHOD /path"`. For example, `"GET /users"` or `"POST /items/:id"`. If the method is omitted, `GET` is assumed.
+
 ## Example
 
 An example application demonstrating the usage of this router can be found in the `cmd/example` directory. You can run it using:
