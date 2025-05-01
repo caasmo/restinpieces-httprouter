@@ -31,7 +31,7 @@ func main() {
 
 ## Compatibility
 
-This router implements the `router.Router` interface defined by `restinpieces`.
+This router implements the [`router.Router`](https://github.com/caasmo/restinpieces/blob/main/router/router.go) interface defined by `restinpieces`.
 
 Route patterns must follow the standard `http.ServeMux` format: `"METHOD /path"`. For example, `"GET /users"` or `"POST /items/:id"`. If the method is omitted, `GET` is assumed.
 
